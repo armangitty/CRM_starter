@@ -1,0 +1,72 @@
+@import "tailwindcss";
+
+:root {
+  --background: #0c1117;
+  --foreground: #f4efe6;
+  --panel: #141b24;
+  --accent: #c4a574;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-sans);
+  --font-display: var(--font-display);
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans), system-ui, sans-serif;
+}
+
+h1,
+h2,
+.font-display {
+  font-family: var(--font-display), Georgia, serif;
+}
+
+input,
+select,
+textarea {
+  width: 100%;
+  border-radius: 0.75rem;
+  border: 1px solid rgb(255 255 255 / 0.08);
+  background: #0c1117;
+  padding: 0.7rem 0.85rem;
+  color: white;
+  outline: none;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+  border-color: rgb(196 165 116 / 0.6);
+}
+
+label {
+  display: block;
+  margin-bottom: 0.35rem;
+  font-size: 0.75rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #a8a29e;
+}
+
+button[type="submit"],
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  background: #c4a574;
+  color: #1a140c;
+  font-weight: 600;
+  padding: 0.7rem 1.1rem;
+  transition: filter 0.15s ease;
+}
+
+button[type="submit"]:hover,
+.btn:hover {
+  filter: brightness(1.08);
+}
