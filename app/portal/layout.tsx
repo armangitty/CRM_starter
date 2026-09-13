@@ -13,8 +13,13 @@ export default async function PortalLayout({
       subtitle="Client portal"
       nav={[
         { href: "/portal", label: "Home" },
-        { href: "/portal/leads", label: "Leads" },
-        { href: "/portal/bookings", label: "Bookings" },
+        { href: "/portal/conversations", label: "Conversations", section: "CRM" },
+        { href: "/portal/leads", label: "Contacts", section: "CRM" },
+        { href: "/portal/opportunities", label: "Pipeline", section: "CRM" },
+        { href: "/portal/bookings", label: "Calendar", section: "CRM" },
+        { href: "/portal/sites", label: "Forms & funnels", section: "Marketing" },
+        { href: "/portal/reputation", label: "Reputation", section: "Marketing" },
+        { href: "/portal/payments", label: "Invoices", section: "Billing" },
       ]}
     >
       {children}

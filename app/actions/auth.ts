@@ -3,6 +3,7 @@
 import { redirect } from "next/navigation";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
+import { runWorkflows } from "@/lib/automation";
 import { slugify } from "@/lib/types";
 import { requireAgency } from "@/lib/session";
 
@@ -201,21 +202,33 @@ export async function addManualLead(formData: FormData) {
     redirect("/agency?error=Account%20not%20found");
   }
 
-  const { error } = await supabase.from("contacts").insert({
-    client_account_id: accountId,
-    first_name: firstName,
-    last_name: lastName,
-    email: email || null,
-    phone: phone || null,
-    source: "manual",
-    status: "new",
-  });
+  const { data: contact, error } = await supabase
+    .from("contacts")
+    .insert({
+      client_account_id: accountId,
+      first_name: firstName,
+      last_name: lastName,
+      email: email || null,
+      phone: phone || null,
+      source: "manual",
+      status: "new",
+    })
+    .select("id")
+    .single();
 
   if (error) {
     const dest = fromPortal
       ? `/portal/leads?error=${encodeURIComponent(error.message)}`
       : `/agency/accounts/${accountId}?error=${encodeURIComponent(error.message)}`;
     redirect(dest);
+  }
+
+  if (contact?.id) {
+    try {
+      await runWorkflows(createAdminClient(), accountId, "contact_created", contact.id);
+    } catch {
+      // Workflows are best-effort until integrations are connected.
+    }
   }
 
   redirect(
@@ -291,6 +304,13 @@ export async function createPublicBooking(formData: FormData) {
 
   if (bookingError) {
     redirect(`/book/${slug}?error=${encodeURIComponent(bookingError.message)}`);
+  }
+
+  try {
+    await runWorkflows(admin, account.id, "contact_created", contact.id);
+    await runWorkflows(admin, account.id, "booking_created", contact.id);
+  } catch {
+    // best-effort
   }
 
   redirect(`/book/${slug}?ok=1`);

@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { runWorkflows } from "@/lib/automation";
 import { createAdminClient } from "@/lib/supabase/admin";
 
 type LeadValue = { name: string; values: string[] };
@@ -51,16 +52,24 @@ async function ingestLead(leadgenId: string, pageId: string) {
     phone = field(fieldData, ["phone", "phone_number", "mobile"]);
   }
 
-  await admin.from("contacts").insert({
-    client_account_id: account.id,
-    first_name: firstName || "Facebook",
-    last_name: lastName || "Lead",
-    email: email || null,
-    phone: phone || null,
-    source: "facebook_lead_ad",
-    source_detail: { leadgenId, pageId, graph: raw },
-    status: "new",
-  });
+  const { data: contact } = await admin
+    .from("contacts")
+    .insert({
+      client_account_id: account.id,
+      first_name: firstName || "Facebook",
+      last_name: lastName || "Lead",
+      email: email || null,
+      phone: phone || null,
+      source: "facebook_lead_ad",
+      source_detail: { leadgenId, pageId, graph: raw },
+      status: "new",
+    })
+    .select("id")
+    .single();
+
+  if (contact?.id) {
+    await runWorkflows(admin, account.id, "contact_created", contact.id);
+  }
 }
 
 export async function GET(request: NextRequest) {
