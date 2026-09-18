@@ -17,8 +17,8 @@ export default async function SettingsPage({
 
   return (
     <div className="max-w-lg">
-      <h1 className="font-display text-4xl text-white">SaaS / white label</h1>
-      <p className="mt-2 text-stone-400">
+      <h1 className="font-display text-4xl text-foreground">SaaS / white label</h1>
+      <p className="mt-2 text-muted-foreground">
         Rebrand the portal like GHL Agency Pro / SaaS mode. Point a custom domain
         at this Vercel project after DNS is ready.
       </p>
@@ -54,7 +54,7 @@ export default async function SettingsPage({
             defaultValue={org?.support_email ?? ""}
           />
         </div>
-        <label className="flex items-center gap-2 normal-case tracking-normal text-stone-300">
+        <label className="flex items-center gap-2 normal-case tracking-normal text-foreground/80">
           <input
             type="checkbox"
             name="white_label_enabled"

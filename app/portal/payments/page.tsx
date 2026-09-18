@@ -9,8 +9,8 @@ export default async function PortalPayments() {
     .eq("client_account_id", account.id);
   return (
     <div>
-      <h1 className="font-display text-4xl text-white">Invoices</h1>
-      <ul className="mt-6 space-y-2 text-white">
+      <h1 className="font-display text-4xl text-foreground">Invoices</h1>
+      <ul className="mt-6 space-y-2 text-foreground">
         {(data ?? []).map((i) => (
           <li key={i.id}>
             ${(i.amount_cents / 100).toFixed(2)} · {i.status}

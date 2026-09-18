@@ -12,11 +12,11 @@ export default async function PortalLayout({
       brand={account?.name ?? "Portal"}
       subtitle="Client portal"
       nav={[
-        { href: "/portal", label: "Home" },
-        { href: "/portal/conversations", label: "Conversations", section: "CRM" },
+        { href: "/portal", label: "Schedule" },
         { href: "/portal/leads", label: "Contacts", section: "CRM" },
+        { href: "/portal/bookings", label: "Booked calls", section: "CRM" },
+        { href: "/portal/conversations", label: "Conversations", section: "CRM" },
         { href: "/portal/opportunities", label: "Pipeline", section: "CRM" },
-        { href: "/portal/bookings", label: "Calendar", section: "CRM" },
         { href: "/portal/sites", label: "Forms & funnels", section: "Marketing" },
         { href: "/portal/reputation", label: "Reputation", section: "Marketing" },
         { href: "/portal/payments", label: "Invoices", section: "Billing" },

@@ -13,8 +13,8 @@ export default async function PortalSites() {
     .eq("client_account_id", account.id);
   return (
     <div>
-      <h1 className="font-display text-4xl text-white">Forms & funnels</h1>
-      <ul className="mt-6 space-y-2 text-sm text-stone-300">
+      <h1 className="font-display text-4xl text-foreground">Forms & funnels</h1>
+      <ul className="mt-6 space-y-2 text-sm text-foreground/80">
         {(forms ?? []).map((f) => (
           <li key={f.slug}>
             Form: /f/{account.slug}/{f.slug}

@@ -2,10 +2,10 @@ import { AppShell } from "@/components/app-shell";
 import { requireAgency } from "@/lib/session";
 
 const nav = [
-  { href: "/agency", label: "Launchpad" },
+  { href: "/agency", label: "Clients" },
+  { href: "/agency/calendars", label: "Booked calls", section: "CRM" },
+  { href: "/agency/contacts", label: "Facebook leads", section: "CRM" },
   { href: "/agency/conversations", label: "Conversations", section: "CRM" },
-  { href: "/agency/calendars", label: "Calendars", section: "CRM" },
-  { href: "/agency/contacts", label: "Contacts", section: "CRM" },
   { href: "/agency/opportunities", label: "Opportunities", section: "CRM" },
   { href: "/agency/payments", label: "Payments", section: "CRM" },
   { href: "/agency/marketing", label: "Email / SMS", section: "Marketing" },

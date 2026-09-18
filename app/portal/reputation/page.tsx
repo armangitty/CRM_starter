@@ -9,12 +9,12 @@ export default async function PortalReputation() {
     .eq("client_account_id", account.id);
   return (
     <div>
-      <h1 className="font-display text-4xl text-white">Reviews</h1>
+      <h1 className="font-display text-4xl text-foreground">Reviews</h1>
       <ul className="mt-6 space-y-3">
         {(data ?? []).map((r) => (
-          <li key={r.id} className="rounded-xl border border-white/5 p-4 text-white">
+          <li key={r.id} className="rounded-xl border border-border p-4 text-foreground">
             {r.author} · {"★".repeat(r.rating)}
-            <p className="text-sm text-stone-400">{r.body}</p>
+            <p className="text-sm text-muted-foreground">{r.body}</p>
           </li>
         ))}
       </ul>

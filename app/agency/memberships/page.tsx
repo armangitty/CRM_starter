@@ -16,8 +16,8 @@ export default async function MembershipsPage({
 
   return (
     <div>
-      <h1 className="font-display text-4xl text-white">Memberships</h1>
-      <p className="mt-2 text-stone-400">
+      <h1 className="font-display text-4xl text-foreground">Memberships</h1>
+      <p className="mt-2 text-muted-foreground">
         Course / community access products. Stripe billing attaches from Integrations.
       </p>
       <Flash ok={query.ok} />
@@ -31,7 +31,7 @@ export default async function MembershipsPage({
       ) : null}
       <ul className="mt-8 space-y-2">
         {(plans ?? []).map((p) => (
-          <li key={p.id} className="rounded-xl border border-white/5 px-4 py-3 text-white">
+          <li key={p.id} className="rounded-xl border border-border px-4 py-3 text-foreground">
             {p.name} — ${(p.amount_cents / 100).toFixed(0)}/mo
           </li>
         ))}

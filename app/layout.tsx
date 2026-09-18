@@ -1,21 +1,25 @@
 import type { Metadata } from "next";
-import { Fraunces, Manrope } from "next/font/google";
+import { Inter, Newsreader } from "next/font/google";
 import "./globals.css";
 
-const display = Fraunces({
+const display = Newsreader({
   variable: "--font-display",
   subsets: ["latin"],
 });
 
-const sans = Manrope({
+const sans = Inter({
   variable: "--font-sans",
   subsets: ["latin"],
 });
 
 export const metadata: Metadata = {
-  title: "Leadport — Agency CRM & client portals",
+  title: "Leadport",
   description:
-    "Run Facebook ads for clients, capture leads, take bookings, and give each company a private portal.",
+    "A branded lead-to-booking CRM for modern growth teams. Facebook ads to booked calls, with a client portal that looks like yours.",
+};
+
+export const viewport = {
+  themeColor: "#b94f2f",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
@@ -24,7 +28,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       lang="en"
       className={`${display.variable} ${sans.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col bg-[#0c1117] text-stone-100">
+      <body className="flex min-h-full flex-col bg-background font-sans text-foreground">
         {children}
       </body>
     </html>

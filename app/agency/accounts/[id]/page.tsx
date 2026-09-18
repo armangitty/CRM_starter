@@ -4,6 +4,7 @@ import {
   inviteClientUser,
   saveMetaSettings,
 } from "@/app/actions/auth";
+import { facebookLabel, type AdAttribution } from "@/lib/attribution";
 import { requireAgency } from "@/lib/session";
 import { notFound } from "next/navigation";
 import { bookingContact, type Booking, type Contact } from "@/lib/types";
@@ -43,7 +44,7 @@ export default async function AccountDetailPage({
       supabase
         .from("bookings")
         .select(
-          "id, starts_at, status, source, contacts ( first_name, last_name, email, phone )",
+          "id, starts_at, status, source, created_at, attribution, contacts ( first_name, last_name, email, phone )",
         )
         .eq("client_account_id", id)
         .order("starts_at", { ascending: false })
@@ -60,13 +61,16 @@ export default async function AccountDetailPage({
   return (
     <div className="space-y-10">
       <div>
-        <p className="text-xs uppercase tracking-[0.2em] text-amber-500/80">
+        <p className="text-xs uppercase tracking-[0.2em] text-primary">
           Sub-account
         </p>
-        <h1 className="font-display mt-1 text-4xl text-white">{account.name}</h1>
-        <p className="mt-2 text-stone-400">
-          Portal users sign in at /login. Public booking lives at{" "}
-          <span className="text-amber-400">/book/{account.slug}</span>
+        <h1 className="font-display mt-1 text-4xl text-foreground">{account.name}</h1>
+        <p className="mt-2 text-muted-foreground">
+          Portal users sign in at /login and see this week&apos;s booked calls.
+          Point Facebook ads at{" "}
+          <span className="text-primary">
+            /book/{account.slug}?utm_source=facebook
+          </span>
         </p>
       </div>
       <Flash ok={query.ok} error={query.error} />
@@ -77,9 +81,9 @@ export default async function AccountDetailPage({
       </div>
 
       <section className="grid gap-8 lg:grid-cols-2">
-        <div className="rounded-2xl border border-white/5 bg-[#141b24] p-6">
-          <h2 className="text-lg text-white">Issue portal access</h2>
-          <p className="mt-1 text-sm text-stone-400">
+        <div className="rounded-2xl border border-border bg-card p-6">
+          <h2 className="text-lg text-foreground">Issue portal access</h2>
+          <p className="mt-1 text-sm text-muted-foreground">
             Creates a login (email + password) for this company, like a GHL
             user on a location.
           </p>
@@ -108,13 +112,20 @@ export default async function AccountDetailPage({
           </form>
         </div>
 
-        <div className="rounded-2xl border border-white/5 bg-[#141b24] p-6">
-          <h2 className="text-lg text-white">Facebook / Meta ads</h2>
-          <p className="mt-1 text-sm text-stone-400">
-            Point the Page&apos;s Lead Ads webhook to this URL, then save the
-            page token so new leads land in this account.
+        <div className="rounded-2xl border border-border bg-card p-6">
+          <h2 className="text-lg text-foreground">Facebook / Meta ads</h2>
+          <p className="mt-1 text-sm text-muted-foreground">
+            Two ways booked calls show up for this customer: Instant Forms
+            (webhook below) and ads that click through to the booking link with
+            utm_source=facebook. Use this destination URL in the ad:
           </p>
-          <p className="mt-3 break-all rounded-lg bg-black/40 px-3 py-2 font-mono text-xs text-amber-200">
+          <p className="mt-3 break-all rounded-lg bg-muted px-3 py-2 font-mono text-xs text-primary">
+            {`${appUrl}/book/${account.slug}?utm_source=facebook&utm_campaign={{campaign.name}}&utm_content={{ad.name}}`}
+          </p>
+          <p className="mt-3 text-sm text-muted-foreground">
+            Lead Ads webhook:
+          </p>
+          <p className="mt-2 break-all rounded-lg bg-muted px-3 py-2 font-mono text-xs text-primary">
             {appUrl}/api/webhooks/meta
           </p>
           <form action={saveMetaSettings} className="mt-5 space-y-3">
@@ -149,8 +160,8 @@ export default async function AccountDetailPage({
         </div>
       </section>
 
-      <section className="rounded-2xl border border-white/5 bg-[#141b24] p-6">
-        <h2 className="text-lg text-white">Add a lead manually</h2>
+      <section className="rounded-2xl border border-border bg-card p-6">
+        <h2 className="text-lg text-foreground">Add a lead manually</h2>
         <form action={addManualLead} className="mt-4 grid gap-3 md:grid-cols-5">
           <input type="hidden" name="account_id" value={id} />
           <input name="first_name" placeholder="First name" required />
@@ -162,11 +173,11 @@ export default async function AccountDetailPage({
       </section>
 
       <section>
-        <h2 className="mb-3 text-lg text-white">Recent leads</h2>
+        <h2 className="mb-3 text-lg text-foreground">Recent leads</h2>
         <LeadTable rows={leadList} />
       </section>
       <section>
-        <h2 className="mb-3 text-lg text-white">Bookings</h2>
+        <h2 className="mb-3 text-lg text-foreground">Booked calls</h2>
         <BookingTable rows={bookingList} />
       </section>
     </div>
@@ -175,12 +186,12 @@ export default async function AccountDetailPage({
 
 function LeadTable({ rows }: { rows: Contact[] }) {
   if (rows.length === 0) {
-    return <p className="text-sm text-stone-500">No leads yet.</p>;
+    return <p className="text-sm text-muted-foreground">No leads yet.</p>;
   }
   return (
-    <div className="overflow-hidden rounded-2xl border border-white/5">
+    <div className="overflow-hidden rounded-2xl border border-border">
       <table className="w-full text-left text-sm">
-        <thead className="bg-white/5 text-stone-400">
+        <thead className="bg-muted text-muted-foreground">
           <tr>
             <th className="px-4 py-3">Name</th>
             <th className="px-4 py-3">Contact</th>
@@ -190,15 +201,15 @@ function LeadTable({ rows }: { rows: Contact[] }) {
         </thead>
         <tbody>
           {rows.map((row) => (
-            <tr key={row.id} className="border-t border-white/5">
-              <td className="px-4 py-3 text-white">
+            <tr key={row.id} className="border-t border-border">
+              <td className="px-4 py-3 text-foreground">
                 {row.first_name} {row.last_name}
               </td>
-              <td className="px-4 py-3 text-stone-400">
+              <td className="px-4 py-3 text-muted-foreground">
                 {row.email ?? row.phone ?? "—"}
               </td>
-              <td className="px-4 py-3 text-stone-400">{row.source}</td>
-              <td className="px-4 py-3 capitalize text-amber-200">{row.status}</td>
+              <td className="px-4 py-3 text-muted-foreground">{row.source}</td>
+              <td className="px-4 py-3 capitalize text-primary">{row.status}</td>
             </tr>
           ))}
         </tbody>
@@ -209,30 +220,35 @@ function LeadTable({ rows }: { rows: Contact[] }) {
 
 function BookingTable({ rows }: { rows: Booking[] }) {
   if (rows.length === 0) {
-    return <p className="text-sm text-stone-500">No bookings yet.</p>;
+    return <p className="text-sm text-muted-foreground">No bookings yet.</p>;
   }
   return (
-    <div className="overflow-hidden rounded-2xl border border-white/5">
+    <div className="overflow-hidden rounded-2xl border border-border">
       <table className="w-full text-left text-sm">
-        <thead className="bg-white/5 text-stone-400">
+        <thead className="bg-muted text-muted-foreground">
           <tr>
-            <th className="px-4 py-3">When</th>
+            <th className="px-4 py-3">Call</th>
             <th className="px-4 py-3">Who</th>
-            <th className="px-4 py-3">Status</th>
+            <th className="px-4 py-3">From</th>
           </tr>
         </thead>
         <tbody>
           {rows.map((row) => (
-            <tr key={row.id} className="border-t border-white/5">
-              <td className="px-4 py-3 text-white">
+            <tr key={row.id} className="border-t border-border">
+              <td className="px-4 py-3 text-foreground">
                 {new Date(row.starts_at).toLocaleString()}
               </td>
-                  <td className="px-4 py-3 text-stone-400">
+              <td className="px-4 py-3 text-muted-foreground">
                 {bookingContact(row)
                   ? `${bookingContact(row)!.first_name} ${bookingContact(row)!.last_name}`
                   : "—"}
               </td>
-              <td className="px-4 py-3 capitalize text-amber-200">{row.status}</td>
+              <td className="px-4 py-3 text-primary">
+                {facebookLabel(
+                  (row.attribution ?? {}) as AdAttribution,
+                  row.source,
+                )}
+              </td>
             </tr>
           ))}
         </tbody>

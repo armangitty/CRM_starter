@@ -21,8 +21,8 @@ export default async function ReportingPage() {
 
   return (
     <div>
-      <h1 className="font-display text-4xl text-white">Reporting</h1>
-      <p className="mt-2 text-stone-400">
+      <h1 className="font-display text-4xl text-foreground">Reporting</h1>
+      <p className="mt-2 text-muted-foreground">
         Agency snapshot across every sub-account — leads, appointments, pipeline
         cash.
       </p>

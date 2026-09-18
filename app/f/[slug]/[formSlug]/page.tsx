@@ -32,20 +32,20 @@ export default async function PublicFormPage({
   if (query.ok) {
     return (
       <div className="mx-auto flex min-h-full max-w-lg flex-col justify-center px-6 text-center">
-        <h1 className="font-display text-4xl text-white">Got it</h1>
-        <p className="mt-3 text-stone-400">You are in {account.name}&apos;s CRM.</p>
+        <h1 className="font-display text-4xl text-foreground">Got it</h1>
+        <p className="mt-3 text-muted-foreground">You are in {account.name}&apos;s CRM.</p>
       </div>
     );
   }
 
   return (
     <div className="mx-auto flex min-h-full max-w-lg flex-col justify-center px-6 py-16">
-      <p className="text-xs uppercase tracking-[0.2em] text-amber-500/80">
+      <p className="text-xs uppercase tracking-[0.2em] text-primary">
         {account.name}
       </p>
-      <h1 className="font-display mt-3 text-4xl text-white">{form.name}</h1>
+      <h1 className="font-display mt-3 text-4xl text-foreground">{form.name}</h1>
       {query.error ? (
-        <p className="mt-4 text-sm text-red-200">{query.error}</p>
+        <p className="mt-4 text-sm text-red-700">{query.error}</p>
       ) : null}
       <form action={submitPublicForm} className="mt-8 space-y-4">
         <input type="hidden" name="account_slug" value={slug} />

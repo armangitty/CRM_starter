@@ -9,8 +9,8 @@ export default async function NewAccountPage({
   const params = await searchParams;
   return (
     <div className="max-w-lg">
-      <h1 className="font-display text-4xl text-white">New client company</h1>
-      <p className="mt-2 text-stone-400">
+      <h1 className="font-display text-4xl text-foreground">New client company</h1>
+      <p className="mt-2 text-muted-foreground">
         This creates a GoHighLevel-style sub-account: CRM, booking page, and
         portal access you can issue next.
       </p>

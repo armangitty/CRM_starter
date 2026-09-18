@@ -21,15 +21,43 @@ function slots(days = 10) {
   return out.slice(0, 24);
 }
 
+const AD_PARAMS = [
+  "utm_source",
+  "utm_medium",
+  "utm_campaign",
+  "utm_content",
+  "utm_term",
+  "fbclid",
+  "campaign_id",
+  "campaign_name",
+  "adset_id",
+  "adset_name",
+  "ad_id",
+  "ad_name",
+] as const;
+
 export default async function BookingPage({
   params,
   searchParams,
 }: {
   params: Promise<{ slug: string }>;
-  searchParams: Promise<{ error?: string; ok?: string }>;
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
 }) {
   const { slug } = await params;
   const query = await searchParams;
+  const get = (key: string) => {
+    const value = query[key];
+    return Array.isArray(value) ? value[0] ?? "" : value ?? "";
+  };
+  const fromFacebook = Boolean(
+    get("fbclid") ||
+      ["facebook", "fb", "meta", "instagram", "ig"].includes(
+        get("utm_source").toLowerCase(),
+      ) ||
+      get("campaign_id") ||
+      get("ad_id"),
+  );
+
   const admin = createAdminClient();
   const { data: account } = await admin
     .from("client_accounts")
@@ -39,15 +67,16 @@ export default async function BookingPage({
 
   if (!account || !account.booking_enabled) notFound();
 
-  if (query.ok) {
+  if (get("ok")) {
     return (
       <div className="mx-auto flex min-h-full max-w-lg flex-col justify-center px-6 text-center">
-        <p className="text-xs uppercase tracking-[0.2em] text-amber-500/80">
+        <p className="text-xs uppercase tracking-[0.2em] text-primary">
           {account.name}
         </p>
-        <h1 className="font-display mt-3 text-4xl text-white">You&apos;re booked</h1>
-        <p className="mt-3 text-stone-400">
-          This appointment now shows in the company portal.
+        <h1 className="font-display mt-3 text-4xl text-foreground">You&apos;re booked</h1>
+        <p className="mt-3 text-muted-foreground">
+          This call now shows on the company week schedule
+          {fromFacebook ? " as a Facebook ad booking" : ""}.
         </p>
       </div>
     );
@@ -57,21 +86,27 @@ export default async function BookingPage({
 
   return (
     <div className="mx-auto flex min-h-full w-full max-w-lg flex-col justify-center px-6 py-16">
-      <p className="text-xs uppercase tracking-[0.2em] text-amber-500/80">
+      <p className="text-xs uppercase tracking-[0.2em] text-primary">
         {account.name}
       </p>
-      <h1 className="font-display mt-3 text-4xl text-white">Book an appointment</h1>
-      <p className="mt-2 text-stone-400">
-        Pick a time. Your details are sent to the {account.name} portal as a
-        booked lead.
+      <h1 className="font-display mt-3 text-4xl text-foreground">Book a call</h1>
+      <p className="mt-2 text-muted-foreground">
+        Pick a day and time. The company sees who booked, when you booked, and
+        {fromFacebook
+          ? " that this came from a Facebook ad."
+          : " the appointment on their week schedule."}
       </p>
-      {query.error ? (
-        <p className="mt-4 rounded-xl bg-red-500/10 px-3 py-2 text-sm text-red-200">
-          {query.error}
+      {get("error") ? (
+        <p className="mt-4 rounded-xl bg-red-50 px-3 py-2 text-sm text-red-700">
+          {get("error")}
         </p>
       ) : null}
-      <form action={createPublicBooking} className="mt-8 space-y-4">
+      <div className="surface mx-auto mt-8 w-full max-w-lg p-6">
+      <form action={createPublicBooking} className="space-y-4">
         <input type="hidden" name="slug" value={slug} />
+        {AD_PARAMS.map((name) => (
+          <input key={name} type="hidden" name={name} value={get(name)} />
+        ))}
         <div className="grid gap-3 md:grid-cols-2">
           <div>
             <label htmlFor="first_name">First name</label>
@@ -91,7 +126,7 @@ export default async function BookingPage({
           <input id="phone" name="phone" />
         </div>
         <div>
-          <label htmlFor="starts_at">Time</label>
+          <label htmlFor="starts_at">Day and time</label>
           <select id="starts_at" name="starts_at" required>
             {times.map((iso) => (
               <option key={iso} value={iso}>
@@ -101,9 +136,10 @@ export default async function BookingPage({
           </select>
         </div>
         <button type="submit" className="w-full">
-          Confirm booking
+          Confirm booked call
         </button>
       </form>
+      </div>
     </div>
   );
 }

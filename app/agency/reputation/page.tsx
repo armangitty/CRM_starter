@@ -20,8 +20,8 @@ export default async function ReputationPage({
 
   return (
     <div>
-      <h1 className="font-display text-4xl text-white">Reputation</h1>
-      <p className="mt-2 text-stone-400">
+      <h1 className="font-display text-4xl text-foreground">Reputation</h1>
+      <p className="mt-2 text-muted-foreground">
         Google Business and Facebook reviews. Connect GBP on Integrations to sync
         automatically.
       </p>
@@ -37,12 +37,12 @@ export default async function ReputationPage({
       ) : null}
       <ul className="mt-8 space-y-3">
         {(reviews ?? []).map((r) => (
-          <li key={r.id} className="rounded-2xl border border-white/5 p-4">
-            <p className="text-white">
+          <li key={r.id} className="rounded-2xl border border-border p-4">
+            <p className="text-foreground">
               {r.author} · {"★".repeat(r.rating)}
             </p>
-            <p className="mt-1 text-sm text-stone-400">{r.body}</p>
-            <p className="mt-1 text-xs uppercase text-stone-600">{r.source}</p>
+            <p className="mt-1 text-sm text-muted-foreground">{r.body}</p>
+            <p className="mt-1 text-xs uppercase text-muted-foreground">{r.source}</p>
           </li>
         ))}
       </ul>

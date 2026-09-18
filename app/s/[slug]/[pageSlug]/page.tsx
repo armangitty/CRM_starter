@@ -30,11 +30,11 @@ export default async function FunnelPage({
 
   return (
     <div className="mx-auto flex min-h-full max-w-2xl flex-col justify-center px-6 py-24 text-center">
-      <p className="text-xs uppercase tracking-[0.2em] text-amber-500/80">
+      <p className="text-xs uppercase tracking-[0.2em] text-primary">
         {account.name}
       </p>
-      <h1 className="font-display mt-4 text-5xl text-white">{page.headline}</h1>
-      <p className="mx-auto mt-6 max-w-lg text-lg text-stone-400">{page.body}</p>
+      <h1 className="font-display mt-4 text-5xl text-foreground">{page.headline}</h1>
+      <p className="mx-auto mt-6 max-w-lg text-lg text-muted-foreground">{page.body}</p>
       <Link href={href} className="btn mx-auto mt-10">
         {page.cta_label}
       </Link>

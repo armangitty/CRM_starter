@@ -70,6 +70,7 @@ export type Booking = {
   ends_at: string;
   status: BookingStatus;
   source: string;
+  attribution?: Record<string, unknown> | null;
   created_at: string;
   contacts?:
     | Pick<Contact, "first_name" | "last_name" | "email" | "phone">

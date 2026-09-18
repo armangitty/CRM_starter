@@ -4,6 +4,10 @@ import { redirect } from "next/navigation";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
 import { runWorkflows } from "@/lib/automation";
+import {
+  attributionFromForm,
+  isFacebookAttribution,
+} from "@/lib/attribution";
 import { slugify } from "@/lib/types";
 import { requireAgency } from "@/lib/session";
 
@@ -245,6 +249,9 @@ export async function createPublicBooking(formData: FormData) {
   const email = String(formData.get("email") ?? "").trim();
   const phone = String(formData.get("phone") ?? "").trim();
   const startsAt = String(formData.get("starts_at") ?? "");
+  const attribution = attributionFromForm(formData);
+  const fromFacebook = isFacebookAttribution(attribution);
+  const source = fromFacebook ? "facebook_ad" : "booking_page";
 
   if (!slug || !firstName || !email || !startsAt) {
     redirect(`/book/${slug}?error=Fill%20in%20name%2C%20email%2C%20and%20a%20time`);
@@ -280,7 +287,8 @@ export async function createPublicBooking(formData: FormData) {
       last_name: lastName,
       email,
       phone: phone || null,
-      source: "booking_page",
+      source,
+      source_detail: fromFacebook ? { attribution } : {},
       status: "booked",
     })
     .select("id")
@@ -299,7 +307,8 @@ export async function createPublicBooking(formData: FormData) {
     starts_at: start.toISOString(),
     ends_at: end.toISOString(),
     status: "scheduled",
-    source: "booking_page",
+    source,
+    attribution,
   });
 
   if (bookingError) {

@@ -32,8 +32,8 @@ export default async function OpportunitiesPage({
 
   return (
     <div>
-      <h1 className="font-display text-4xl text-white">Opportunities</h1>
-      <p className="mt-2 text-stone-400">
+      <h1 className="font-display text-4xl text-foreground">Opportunities</h1>
+      <p className="mt-2 text-muted-foreground">
         GHL-style pipeline. New leads can be converted into deals and dragged by
         stage as we grow this board.
       </p>
@@ -46,15 +46,15 @@ export default async function OpportunitiesPage({
           <button type="submit">Add deal</button>
         </form>
       ) : (
-        <p className="mt-6 text-stone-500">Create a sub-account first.</p>
+        <p className="mt-6 text-muted-foreground">Create a sub-account first.</p>
       )}
       <div className="mt-8 flex gap-4 overflow-x-auto pb-4">
         {columns.map((col) => (
           <div
             key={col.id}
-            className="w-64 shrink-0 rounded-2xl border border-white/5 bg-[#141b24] p-3"
+            className="w-64 shrink-0 rounded-2xl border border-border bg-card p-3"
           >
-            <p className="mb-3 text-xs uppercase tracking-wider text-stone-500">
+            <p className="mb-3 text-xs uppercase tracking-wider text-muted-foreground">
               {col.name}
             </p>
             {(opps ?? [])
@@ -62,10 +62,10 @@ export default async function OpportunitiesPage({
               .map((o) => (
                 <div
                   key={o.id}
-                  className="mb-2 rounded-xl border border-white/5 bg-black/30 p-3"
+                  className="mb-2 rounded-xl border border-border bg-black/30 p-3"
                 >
-                  <p className="text-sm text-white">{o.title}</p>
-                  <p className="text-xs text-amber-200">
+                  <p className="text-sm text-foreground">{o.title}</p>
+                  <p className="text-xs text-primary">
                     ${(o.value_cents / 100).toFixed(0)}
                   </p>
                 </div>

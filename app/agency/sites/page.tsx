@@ -16,28 +16,28 @@ export default async function SitesPage() {
 
   return (
     <div>
-      <h1 className="font-display text-4xl text-white">Sites & forms</h1>
-      <p className="mt-2 text-stone-400">
+      <h1 className="font-display text-4xl text-foreground">Sites & forms</h1>
+      <p className="mt-2 text-muted-foreground">
         Funnels for paid traffic and forms that write into the CRM — the GHL Sites
         tab. Chat widget snippet is on each form page.
       </p>
-      <h2 className="mt-8 text-lg text-white">Forms</h2>
+      <h2 className="mt-8 text-lg text-foreground">Forms</h2>
       <ul className="mt-3 space-y-2 text-sm">
         {(forms ?? []).map((f) => (
-          <li key={f.id} className="text-stone-300">
+          <li key={f.id} className="text-foreground/80">
             {f.name}{" "}
-            <span className="text-amber-400">
+            <span className="text-primary">
               /f/{slugs[f.client_account_id]}/{f.slug}
             </span>
           </li>
         ))}
       </ul>
-      <h2 className="mt-8 text-lg text-white">Funnels</h2>
+      <h2 className="mt-8 text-lg text-foreground">Funnels</h2>
       <ul className="mt-3 space-y-2 text-sm">
         {(pages ?? []).map((p) => (
-          <li key={p.id} className="text-stone-300">
+          <li key={p.id} className="text-foreground/80">
             {p.name}{" "}
-            <span className="text-amber-400">
+            <span className="text-primary">
               /s/{slugs[p.client_account_id]}/{p.slug}
             </span>
           </li>

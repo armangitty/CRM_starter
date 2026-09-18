@@ -14,13 +14,13 @@ export default async function ContactsPage() {
 
   return (
     <div>
-      <h1 className="font-display text-4xl text-white">Contacts</h1>
-      <p className="mt-2 text-stone-400">
+      <h1 className="font-display text-4xl text-foreground">Contacts</h1>
+      <p className="mt-2 text-muted-foreground">
         Every Facebook lead, form fill, and booking lands here across sub-accounts.
       </p>
-      <div className="mt-8 overflow-hidden rounded-2xl border border-white/5">
+      <div className="mt-8 overflow-hidden rounded-2xl border border-border">
         <table className="w-full text-left text-sm">
-          <thead className="bg-white/5 text-stone-400">
+          <thead className="bg-muted text-muted-foreground">
             <tr>
               <th className="px-4 py-3">Name</th>
               <th className="px-4 py-3">Sub-account</th>
@@ -30,16 +30,16 @@ export default async function ContactsPage() {
           </thead>
           <tbody>
             {(data ?? []).map((row) => (
-              <tr key={row.id} className="border-t border-white/5">
-                <td className="px-4 py-3 text-white">
+              <tr key={row.id} className="border-t border-border">
+                <td className="px-4 py-3 text-foreground">
                   {row.first_name} {row.last_name}
-                  <div className="text-xs text-stone-500">{row.email ?? row.phone}</div>
+                  <div className="text-xs text-muted-foreground">{row.email ?? row.phone}</div>
                 </td>
-                <td className="px-4 py-3 text-stone-400">
+                <td className="px-4 py-3 text-muted-foreground">
                   {names[row.client_account_id]}
                 </td>
-                <td className="px-4 py-3 text-stone-400">{row.source}</td>
-                <td className="px-4 py-3 capitalize text-amber-200">{row.status}</td>
+                <td className="px-4 py-3 text-muted-foreground">{row.source}</td>
+                <td className="px-4 py-3 capitalize text-primary">{row.status}</td>
               </tr>
             ))}
           </tbody>

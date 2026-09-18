@@ -36,9 +36,10 @@ export default async function AgencyHome({
     <div>
       <div className="mb-8 flex items-end justify-between">
         <div>
-          <h1 className="font-display text-4xl text-white">Clients</h1>
-          <p className="mt-2 text-stone-400">
-            Each company is a sub-account with its own leads, ads, and portal.
+          <h1 className="font-display text-4xl text-foreground">Clients</h1>
+          <p className="mt-2 text-muted-foreground">
+            Each company sees Facebook leads and a week schedule of booked calls
+            from your ads.
           </p>
         </div>
         <Link href="/agency/accounts/new" className="btn">
@@ -49,11 +50,11 @@ export default async function AgencyHome({
       <div className="mb-8 grid gap-4 md:grid-cols-3">
         <Stat label="Client accounts" value={accounts?.length ?? 0} />
         <Stat label="Leads captured" value={leadCount ?? 0} />
-        <Stat label="Upcoming bookings" value={bookingCount ?? 0} />
+        <Stat label="Upcoming booked calls" value={bookingCount ?? 0} />
       </div>
-      <div className="overflow-hidden rounded-2xl border border-white/5">
+      <div className="overflow-hidden rounded-2xl border border-border">
         <table className="w-full text-left text-sm">
-          <thead className="bg-white/5 text-stone-400">
+          <thead className="bg-muted text-muted-foreground">
             <tr>
               <th className="px-4 py-3 font-medium">Company</th>
               <th className="px-4 py-3 font-medium">Industry</th>
@@ -64,25 +65,25 @@ export default async function AgencyHome({
           <tbody>
             {(accounts ?? []).length === 0 ? (
               <tr>
-                <td colSpan={4} className="px-4 py-10 text-center text-stone-500">
+                <td colSpan={4} className="px-4 py-10 text-center text-muted-foreground">
                   No clients yet. Add a company to issue a portal login.
                 </td>
               </tr>
             ) : (
               (accounts ?? []).map((account) => (
-                <tr key={account.id} className="border-t border-white/5">
+                <tr key={account.id} className="border-t border-border">
                   <td className="px-4 py-3">
                     <Link
                       href={`/agency/accounts/${account.id}`}
-                      className="font-medium text-white hover:text-amber-400"
+                      className="font-medium text-foreground hover:text-primary"
                     >
                       {account.name}
                     </Link>
                   </td>
-                  <td className="px-4 py-3 text-stone-400">
+                  <td className="px-4 py-3 text-muted-foreground">
                     {account.industry ?? "—"}
                   </td>
-                  <td className="px-4 py-3 text-stone-400">
+                  <td className="px-4 py-3 text-muted-foreground">
                     {account.facebook_page_id || account.meta_ad_account_id
                       ? "Connected"
                       : "Not connected"}
@@ -90,7 +91,7 @@ export default async function AgencyHome({
                   <td className="px-4 py-3">
                     <Link
                       href={`/book/${account.slug}`}
-                      className="text-amber-500 hover:underline"
+                      className="text-primary hover:underline"
                     >
                       /book/{account.slug}
                     </Link>

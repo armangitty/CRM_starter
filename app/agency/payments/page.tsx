@@ -20,8 +20,8 @@ export default async function PaymentsPage({
 
   return (
     <div>
-      <h1 className="font-display text-4xl text-white">Payments</h1>
-      <p className="mt-2 text-stone-400">
+      <h1 className="font-display text-4xl text-foreground">Payments</h1>
+      <p className="mt-2 text-muted-foreground">
         Invoices and subscriptions. Stripe webhook: /api/webhooks/stripe
       </p>
       <Flash ok={query.ok} />
@@ -33,7 +33,7 @@ export default async function PaymentsPage({
         </form>
       ) : null}
       <table className="mt-8 w-full text-left text-sm">
-        <thead className="text-stone-400">
+        <thead className="text-muted-foreground">
           <tr>
             <th className="py-2">Amount</th>
             <th>Status</th>
@@ -41,9 +41,9 @@ export default async function PaymentsPage({
         </thead>
         <tbody>
           {(invoices ?? []).map((i) => (
-            <tr key={i.id} className="border-t border-white/5 text-white">
+            <tr key={i.id} className="border-t border-border text-foreground">
               <td className="py-3">${(i.amount_cents / 100).toFixed(2)}</td>
-              <td className="capitalize text-amber-200">{i.status}</td>
+              <td className="capitalize text-primary">{i.status}</td>
             </tr>
           ))}
         </tbody>
