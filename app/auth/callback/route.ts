@@ -1,5 +1,5 @@
 import { NextResponse, type NextRequest } from "next/server";
-import { ensureAgencyForUser, destinationForWorkspace } from "@/lib/agency";
+import { ensureAgencyForUser, destinationForWorkspace } from "@/lib/provision-agency";
 import { createClient } from "@/lib/supabase/server";
 
 export async function GET(request: NextRequest) {

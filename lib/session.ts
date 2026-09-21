@@ -1,5 +1,5 @@
 import { redirect } from "next/navigation";
-import { ensureAgencyForUser } from "@/lib/agency";
+import { ensureAgencyForUser } from "@/lib/provision-agency";
 import { createClient } from "@/lib/supabase/server";
 import {
   isAgencyRole,

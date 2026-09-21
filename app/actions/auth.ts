@@ -12,7 +12,7 @@ import { appUrl } from "@/lib/app-url";
 import {
   destinationForWorkspace,
   ensureAgencyForUser,
-} from "@/lib/agency";
+} from "@/lib/provision-agency";
 import { slugify } from "@/lib/types";
 import { requireAgency } from "@/lib/session";
 
