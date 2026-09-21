@@ -1,5 +1,6 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
+import { safeNextPath } from "@/lib/auth-redirect";
 import { isAgencyRole, type Membership } from "@/lib/types";
 
 export async function updateSession(request: NextRequest) {
@@ -34,13 +35,17 @@ export async function updateSession(request: NextRequest) {
 
   const path = request.nextUrl.pathname;
   const isProtected =
-    path.startsWith("/agency") || path.startsWith("/portal");
+    path.startsWith("/agency") ||
+    path.startsWith("/portal") ||
+    path === "/auth/reset-password" ||
+    path === "/auth/setup";
   const isAuthPage = path === "/login" || path === "/signup";
 
   if (isProtected && !user) {
     const redirect = request.nextUrl.clone();
     redirect.pathname = "/login";
-    redirect.searchParams.set("next", path);
+    const next = safeNextPath(path);
+    if (next) redirect.searchParams.set("next", next);
     return NextResponse.redirect(redirect);
   }
 

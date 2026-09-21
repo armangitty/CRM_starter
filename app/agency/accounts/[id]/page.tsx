@@ -99,7 +99,7 @@ export default async function AccountDetailPage({
             </div>
             <div>
               <label htmlFor="password">Password</label>
-              <input id="password" name="password" minLength={8} required />
+              <input id="password" name="password" type="password" minLength={8} required autoComplete="new-password" />
             </div>
             <div>
               <label htmlFor="role">Role</label>

@@ -1,4 +1,5 @@
 import { NextResponse, type NextRequest } from "next/server";
+import { safeNextPath } from "@/lib/auth-redirect";
 import { ensureAgencyForUser, destinationForWorkspace } from "@/lib/provision-agency";
 import { createClient } from "@/lib/supabase/server";
 
@@ -36,8 +37,6 @@ export async function GET(request: NextRequest) {
   }
 
   const path =
-    next?.startsWith("/") && !next.startsWith("//")
-      ? next
-      : destinationForWorkspace(result.status);
+    safeNextPath(next) ?? destinationForWorkspace(result.status);
   return NextResponse.redirect(`${origin}${path}`);
 }

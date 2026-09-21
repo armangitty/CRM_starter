@@ -48,6 +48,11 @@ export default async function LoginPage({
               Continue
             </button>
             <p className="text-center text-sm text-muted-foreground">
+              <Link href="/forgot-password" className="font-medium text-primary hover:underline">
+                Forgot password?
+              </Link>
+            </p>
+            <p className="text-center text-sm text-muted-foreground">
               Don&apos;t have an account?{" "}
               <Link href="/signup" className="font-medium text-primary hover:underline">
                 Create one

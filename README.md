@@ -31,8 +31,14 @@ Or create an empty repo on github.com and add `origin`.
 
 1. Create a project at [supabase.com](https://supabase.com).
 2. Open **SQL Editor** and paste `supabase/migrations/0001_init.sql`.
-3. **Authentication → URL Configuration**: set Site URL to your app (local or Vercel) and add `{APP_URL}/auth/callback` under Redirect URLs. Keep **Confirm email** on so agency signup verifies the address, then creates the workspace after they sign in.
-4. Copy **Project URL**, **anon key**, and **service role key** from Settings → API.
+3. **Authentication → URL Configuration**
+   - Site URL: `https://crm-starter-steel.vercel.app` in production, `http://localhost:3000` for local-only testing (production Site URL should be the live domain).
+   - Redirect URLs must include:
+     - `http://localhost:3000/auth/callback`
+     - `https://crm-starter-steel.vercel.app/auth/callback`
+     - `https://crm-starter-steel.vercel.app/auth/callback?next=/auth/reset-password`
+   - Keep **Confirm email** on (Authentication → Providers → Email).
+4. Copy **Project URL**, **anon/publishable key**, and **service role key** from Settings → API. Never put the service role key in `NEXT_PUBLIC_` variables.
 
 ## 3. Local env
 
@@ -52,9 +58,8 @@ Open [http://localhost:3000](http://localhost:3000), create an agency, add a cli
 ## 4. Vercel
 
 1. Import the GitHub repo in [vercel.com](https://vercel.com).
-2. Add the same env vars (`NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY`, `NEXT_PUBLIC_APP_URL`, `META_VERIFY_TOKEN`).
-3. Set `NEXT_PUBLIC_APP_URL` to your Vercel URL (e.g. `https://leadport.vercel.app`).
-4. Deploy. After the first domain is known, add that URL to Supabase **Authentication → URL configuration** (`Site URL` + redirect `https://your-domain/auth/callback` if you add magic links later).
+2. Add env vars (Production + Preview): `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY` (not public), `NEXT_PUBLIC_APP_URL=https://crm-starter-steel.vercel.app`, `META_VERIFY_TOKEN`.
+3. Deploy from GitHub `main`. After deploy, confirm `/login`, `/signup`, `/forgot-password`, and `/auth/callback` load on the production domain.
 
 ## 5. Facebook Lead Ads
 

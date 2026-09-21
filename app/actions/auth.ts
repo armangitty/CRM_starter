@@ -9,6 +9,7 @@ import {
   isFacebookAttribution,
 } from "@/lib/attribution";
 import { appUrl } from "@/lib/app-url";
+import { safeNextPath } from "@/lib/auth-redirect";
 import {
   destinationForWorkspace,
   ensureAgencyForUser,
@@ -71,12 +72,54 @@ export async function signIn(formData: FormData) {
     if (result.status === "error") {
       redirect(`/login?error=${encodeURIComponent(result.message)}`);
     }
-    if (next.startsWith("/") && !next.startsWith("//")) redirect(next);
-    redirect(destinationForWorkspace(result.status));
+    redirect(safeNextPath(next) ?? destinationForWorkspace(result.status));
   }
 
-  if (next.startsWith("/") && !next.startsWith("//")) redirect(next);
-  redirect("/agency");
+  redirect(safeNextPath(next) ?? "/agency");
+}
+
+export async function requestPasswordReset(formData: FormData) {
+  const email = String(formData.get("email") ?? "").trim().toLowerCase();
+  if (!email) {
+    redirect("/forgot-password?error=Enter%20your%20email");
+  }
+
+  const supabase = await createClient();
+  const origin = await appUrl();
+  await supabase.auth.resetPasswordForEmail(email, {
+    redirectTo: `${origin}/auth/callback?next=/auth/reset-password`,
+  });
+  redirect("/forgot-password?sent=1");
+}
+
+export async function updatePassword(formData: FormData) {
+  const password = String(formData.get("password") ?? "");
+  const confirm = String(formData.get("confirm_password") ?? "");
+  if (password.length < 8) {
+    redirect("/auth/reset-password?error=Use%20at%20least%208%20characters");
+  }
+  if (password !== confirm) {
+    redirect("/auth/reset-password?error=Passwords%20do%20not%20match");
+  }
+
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) {
+    redirect("/login?error=Sign%20in%20from%20the%20reset%20link%20first");
+  }
+
+  const { error } = await supabase.auth.updateUser({ password });
+  if (error) {
+    redirect(`/auth/reset-password?error=${encodeURIComponent(error.message)}`);
+  }
+
+  const result = await ensureAgencyForUser(supabase, user);
+  if (result.status === "error") {
+    redirect("/agency");
+  }
+  redirect(destinationForWorkspace(result.status));
 }
 
 export async function signOut() {

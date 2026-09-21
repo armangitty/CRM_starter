@@ -64,7 +64,7 @@ export default async function SignupPage({
             </div>
             <div>
               <label htmlFor="password">Password</label>
-              <input id="password" name="password" type="password" minLength={8} required />
+              <input id="password" name="password" type="password" minLength={8} required autoComplete="new-password" />
             </div>
             <button type="submit" className="w-full">
               Create agency
