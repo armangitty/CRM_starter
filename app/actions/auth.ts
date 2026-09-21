@@ -8,6 +8,11 @@ import {
   attributionFromForm,
   isFacebookAttribution,
 } from "@/lib/attribution";
+import { appUrl } from "@/lib/app-url";
+import {
+  destinationForWorkspace,
+  ensureAgencyForUser,
+} from "@/lib/agency";
 import { slugify } from "@/lib/types";
 import { requireAgency } from "@/lib/session";
 
@@ -22,10 +27,14 @@ export async function signUpAgency(formData: FormData) {
   }
 
   const supabase = await createClient();
+  const origin = await appUrl();
   const { data, error } = await supabase.auth.signUp({
     email,
     password,
-    options: { data: { full_name: fullName } },
+    options: {
+      data: { full_name: fullName, agency_name: agencyName },
+      emailRedirectTo: `${origin}/auth/callback`,
+    },
   });
 
   if (error) {
@@ -33,21 +42,14 @@ export async function signUpAgency(formData: FormData) {
   }
 
   if (!data.session) {
-    redirect(
-      "/login?error=Confirm%20your%20email%20in%20Supabase%20(or%20disable%20email%20confirmation)%20then%20sign%20in.%20If%20this%20is%20the%20first%20user%2C%20turn%20off%20Confirm%20email%20in%20Auth%20settings%20so%20the%20agency%20can%20be%20created.",
-    );
+    redirect("/signup?checkEmail=1");
   }
 
-  const { error: rpcError } = await supabase.rpc("create_agency", {
-    p_name: agencyName,
-    p_slug: slugify(agencyName) || `agency-${Date.now()}`,
-  });
-
-  if (rpcError) {
-    redirect(`/signup?error=${encodeURIComponent(rpcError.message)}`);
+  const result = await ensureAgencyForUser(supabase, data.user!);
+  if (result.status === "error") {
+    redirect(`/signup?error=${encodeURIComponent(result.message)}`);
   }
-
-  redirect("/agency");
+  redirect(destinationForWorkspace(result.status));
 }
 
 export async function signIn(formData: FormData) {
@@ -56,12 +58,24 @@ export async function signIn(formData: FormData) {
   const next = String(formData.get("next") ?? "");
 
   const supabase = await createClient();
-  const { error } = await supabase.auth.signInWithPassword({ email, password });
+  const { data, error } = await supabase.auth.signInWithPassword({
+    email,
+    password,
+  });
   if (error) {
     redirect(`/login?error=${encodeURIComponent(error.message)}`);
   }
 
-  if (next.startsWith("/")) redirect(next);
+  if (data.user) {
+    const result = await ensureAgencyForUser(supabase, data.user);
+    if (result.status === "error") {
+      redirect(`/login?error=${encodeURIComponent(result.message)}`);
+    }
+    if (next.startsWith("/") && !next.startsWith("//")) redirect(next);
+    redirect(destinationForWorkspace(result.status));
+  }
+
+  if (next.startsWith("/") && !next.startsWith("//")) redirect(next);
   redirect("/agency");
 }
 

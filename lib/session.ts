@@ -1,4 +1,5 @@
 import { redirect } from "next/navigation";
+import { ensureAgencyForUser } from "@/lib/agency";
 import { createClient } from "@/lib/supabase/server";
 import {
   isAgencyRole,
@@ -30,8 +31,17 @@ export async function getAuthContext() {
 }
 
 export async function requireAgency() {
-  const ctx = await getAuthContext();
+  let ctx = await getAuthContext();
   if (!ctx.user) redirect("/login");
+
+  if (!ctx.memberships.find((m) => isAgencyRole(m.role))) {
+    const result = await ensureAgencyForUser(ctx.supabase, ctx.user);
+    if (result.status === "error") {
+      redirect(`/signup?error=${encodeURIComponent(result.message)}`);
+    }
+    ctx = await getAuthContext();
+  }
+
   const agency = ctx.memberships.find((m) => isAgencyRole(m.role));
   if (!agency) redirect("/portal");
 

@@ -20,7 +20,7 @@ export default async function LoginPage({
           <div className="p-6 pb-2 text-center">
             <h1 className="font-display text-3xl tracking-tight">Welcome back</h1>
             <p className="mt-2 text-sm text-muted-foreground">
-              Sign in to your account to continue
+              Confirm your email first if you just created an agency, then sign in.
             </p>
           </div>
           <form action={signIn} className="space-y-4 p-6 pt-4">

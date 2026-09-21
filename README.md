@@ -31,7 +31,7 @@ Or create an empty repo on github.com and add `origin`.
 
 1. Create a project at [supabase.com](https://supabase.com).
 2. Open **SQL Editor** and paste `supabase/migrations/0001_init.sql`.
-3. **Authentication → Providers → Email**: turn **Confirm email** off so agency signup can create the org in the same step.
+3. **Authentication → URL Configuration**: set Site URL to your app (local or Vercel) and add `{APP_URL}/auth/callback` under Redirect URLs. Keep **Confirm email** on so agency signup verifies the address, then creates the workspace after they sign in.
 4. Copy **Project URL**, **anon key**, and **service role key** from Settings → API.
 
 ## 3. Local env

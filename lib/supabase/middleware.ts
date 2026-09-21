@@ -52,10 +52,18 @@ export async function updateSession(request: NextRequest) {
 
     const rows = (memberships ?? []) as Membership[];
     const target = request.nextUrl.clone();
-    target.pathname = rows.some((m) => isAgencyRole(m.role))
-      ? "/agency"
-      : "/portal";
-    return NextResponse.redirect(target);
+    if (rows.some((m) => isAgencyRole(m.role))) {
+      target.pathname = "/agency";
+      return NextResponse.redirect(target);
+    }
+    if (rows.some((m) => m.client_account_id)) {
+      target.pathname = "/portal";
+      return NextResponse.redirect(target);
+    }
+    if (path === "/login") {
+      target.pathname = "/auth/setup";
+      return NextResponse.redirect(target);
+    }
   }
 
   return response;
