@@ -9,6 +9,7 @@ import {
   isFacebookAttribution,
 } from "@/lib/attribution";
 import { appUrl } from "@/lib/app-url";
+import { authErrorMessage } from "@/lib/auth-errors";
 import { safeNextPath } from "@/lib/auth-redirect";
 import {
   destinationForWorkspace,
@@ -39,7 +40,7 @@ export async function signUpAgency(formData: FormData) {
   });
 
   if (error) {
-    redirect(`/signup?error=${encodeURIComponent(error.message)}`);
+    redirect(`/signup?error=${encodeURIComponent(authErrorMessage(error))}`);
   }
 
   if (!data.session) {
@@ -64,7 +65,7 @@ export async function signIn(formData: FormData) {
     password,
   });
   if (error) {
-    redirect(`/login?error=${encodeURIComponent(error.message)}`);
+    redirect(`/login?error=${encodeURIComponent(authErrorMessage(error))}`);
   }
 
   if (data.user) {
@@ -112,7 +113,7 @@ export async function updatePassword(formData: FormData) {
 
   const { error } = await supabase.auth.updateUser({ password });
   if (error) {
-    redirect(`/auth/reset-password?error=${encodeURIComponent(error.message)}`);
+    redirect(`/auth/reset-password?error=${encodeURIComponent(authErrorMessage(error))}`);
   }
 
   const result = await ensureAgencyForUser(supabase, user);
