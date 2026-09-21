@@ -8,7 +8,23 @@ export async function updateSession(request: NextRequest) {
 
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+  const path = request.nextUrl.pathname;
+  const isProtected =
+    path.startsWith("/agency") ||
+    path.startsWith("/portal") ||
+    path === "/auth/reset-password" ||
+    path === "/auth/setup";
+
   if (!url || !key) {
+    if (isProtected) {
+      const redirect = request.nextUrl.clone();
+      redirect.pathname = "/login";
+      redirect.searchParams.set(
+        "error",
+        "Auth is not configured on this host. Add NEXT_PUBLIC_SUPABASE_ANON_KEY in Vercel.",
+      );
+      return NextResponse.redirect(redirect);
+    }
     return response;
   }
 
@@ -33,12 +49,6 @@ export async function updateSession(request: NextRequest) {
     data: { user },
   } = await supabase.auth.getUser();
 
-  const path = request.nextUrl.pathname;
-  const isProtected =
-    path.startsWith("/agency") ||
-    path.startsWith("/portal") ||
-    path === "/auth/reset-password" ||
-    path === "/auth/setup";
   const isAuthPage = path === "/login" || path === "/signup";
 
   if (isProtected && !user) {
