@@ -45,6 +45,9 @@ export function MarketingFooter() {
         <Link href="/#contact" className="inline-flex h-8 items-center rounded-md px-3 text-xs font-medium text-primary underline-offset-4 hover:underline">
           Contact
         </Link>
+        <Link href="/guides/electricity" className="inline-flex h-8 items-center rounded-md px-3 text-xs font-medium text-primary underline-offset-4 hover:underline">
+          Electricity booklet
+        </Link>
         <Link href="/login" className="inline-flex h-8 items-center rounded-md px-3 text-xs font-medium text-primary underline-offset-4 hover:underline">
           Sign in
         </Link>
